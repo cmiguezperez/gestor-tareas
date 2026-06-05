@@ -7,97 +7,162 @@ const supabase = createClient(
 );
 
 function App() {
-  const [session, setSession] = useState(null);
   const [tareas, setTareas] = useState([]);
   const [texto, setTexto] = useState("");
+  const [filtro, setFiltro] = useState("todas");
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    cargarTareas();
   }, []);
 
-  useEffect(() => {
-    if (session) cargarTareas();
-  }, [session]);
-
   async function cargarTareas() {
-    const { data } = await supabase
-      .from("Tareas")
-      .select("*")
-      .eq("user_id", session.user.id);
-
+    const { data } = await supabase.from("Tareas").select("*");
     setTareas(data || []);
   }
 
+  async function agregarTarea() {
+    if (!texto) return;
 
-	async function agregarTarea() {
-	  if (!texto) return;
+    await supabase.from("Tareas").insert([
+      {
+        Texto: texto,
+        completada: false,
+      },
+    ]);
 
-	  console.log("Usuario:", session?.user?.id);
-
-	  const { data, error } = await supabase.from("Tareas").insert([
-		{
-		  Texto: texto,
-		  user_id: session.user.id,
-		},
-	  ]);
-
-	  console.log("Resultado insert:", data, error);
-
-	  setTexto("");
-	  cargarTareas();
-	}
-
+    setTexto("");
+    cargarTareas();
+  }
 
   async function eliminarTarea(id) {
     await supabase.from("Tareas").delete().eq("id", id);
     cargarTareas();
   }
 
-  // ✅ LOGIN UI
-  if (!session) {
-    return (
-      <div style={{ padding: "40px", textAlign: "center" }}>
-        <h2>Login</h2>
-        <button
-          onClick={() =>
-            supabase.auth.signInWithOtp({
-              email: prompt("Introduce tu email"),
-            })
-          }
-        >
-          Enviar login por email
-        </button>
-      </div>
-    );
+  async function toggleCompletada(id, valorActual) {
+    await supabase
+      .from("Tareas")
+      .update({ completada: !valorActual })
+      .eq("id", id);
+
+    cargarTareas();
   }
 
+  const tareasFiltradas = tareas.filter((t) => {
+    if (filtro === "pendientes") return !t.completada;
+    if (filtro === "completadas") return t.completada;
+    return true;
+  });
+
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto" }}>
-      <h2>Gestor de tareas</h2>
+    <div style={{
+      maxWidth: "400px",
+      margin: "40px auto",
+      fontFamily: "sans-serif"
+    }}>
 
-      <button onClick={() => supabase.auth.signOut()}>
-        Cerrar sesión
-      </button>
+      <h2 style={{ textAlign: "center" }}>
+        ✅ Gestor de tareas
+      </h2>
 
-      <input
-        value={texto}
-        onChange={(e) => setTexto(e.target.value)}
-        placeholder="Nueva tarea"
-      />
+      {/* INPUT */}
+      <div style={{ display: "flex", gap: "10px" }}>
+        <input
+          value={texto}
+          onChange={(e) => setTexto(e.target.value)}
+          placeholder="Nueva tarea"
+          style={{
+            flex: 1,
+            padding: "10px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+          }}
+        />
+        <button
+          onClick={agregarTarea}
+          style={{
+            padding: "10px",
+            borderRadius: "8px",
+            border: "none",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          +
+        </button>
+      </div>
 
-      <button onClick={agregarTarea}>+</button>
+      {/* FILTROS */}
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "10px",
+        marginTop: "15px"
+      }}>
+        {["todas", "pendientes", "completadas"].map((f) => (
+          <button
+            key={f}
+            onClick={() => setFiltro(f)}
+            style={{
+              padding: "6px 10px",
+              borderRadius: "6px",
+              border: "none",
+              cursor: "pointer",
+              background: filtro === f ? "#4CAF50" : "#ddd"
+            }}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
 
-      <ul>
-        {tareas.map((t) => (
-          <li key={t.id}>
-            {t.Texto}
-            <button onClick={() => eliminarTarea(t.id)}>
+      {/* LISTA */}
+      <ul style={{
+        listStyle: "none",
+        padding: 0,
+        marginTop: "20px"
+      }}>
+        {tareasFiltradas.map((t) => (
+          <li
+            key={t.id}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              background: "#f5f5f5",
+              padding: "10px",
+              borderRadius: "10px",
+              marginBottom: "10px"
+            }}
+          >
+            <div>
+              <input
+                type="checkbox"
+                checked={t.completada || false}
+                onChange={() =>
+                  toggleCompletada(t.id, t.completada)
+                }
+              />
+              <span style={{
+                marginLeft: "10px",
+                textDecoration: t.completada
+                  ? "line-through"
+                  : "none"
+              }}>
+                {t.Texto}
+              </span>
+            </div>
+
+            <button
+              onClick={() => eliminarTarea(t.id)}
+              style={{
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+                fontSize: "18px"
+              }}
+            >
               ❌
             </button>
           </li>
@@ -108,3 +173,4 @@ function App() {
 }
 
 export default App;
+``
