@@ -72,6 +72,22 @@ function App() {
     cargarTareas();
   }
 
+	// ✅ completar tarea
+	async function toggleCompletada(id, valorActual) {
+	  const { error } = await supabase
+		.from("Tareas")
+		.update({ completada: !valorActual })
+		.eq("id", id);
+
+	  if (error) {
+		console.log("Error actualizando:", error);
+		return;
+	  }
+
+	  cargarTareas();
+	}
+  
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Gestor de tareas</h1>
@@ -84,16 +100,29 @@ function App() {
 
       <button onClick={agregarTarea}>Añadir</button>
 
-      <ul>
-        {tareas.map((t) => (
-          <li key={t.id}>
-            {t.Texto}
-            <button onClick={() => eliminarTarea(t.id)}>
-              ❌
-            </button>
-          </li>
-        ))}
-      </ul>
+
+		<ul>
+		  {tareas.map((t) => (
+			<li key={t.id} style={{
+			  textDecoration: t.completada ? "line-through" : "none"
+			}}>
+			  
+			  <input
+				type="checkbox"
+				checked={t.completada || false}
+				onChange={() => toggleCompletada(t.id, t.completada)}
+			  />
+
+			  {t.Texto}
+
+			  <button onClick={() => eliminarTarea(t.id)}>
+				❌
+			  </button>
+
+			</li>
+		  ))}
+		</ul>
+
     </div>
   );
 }
