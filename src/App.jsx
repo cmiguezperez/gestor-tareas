@@ -34,19 +34,25 @@ function App() {
     setTareas(data || []);
   }
 
-  async function agregarTarea() {
-    if (!texto) return;
 
-    await supabase.from("Tareas").insert([
-      {
-        Texto: texto,
-        user_id: session.user.id,
-      },
-    ]);
+	async function agregarTarea() {
+	  if (!texto) return;
 
-    setTexto("");
-    cargarTareas();
-  }
+	  console.log("Usuario:", session?.user?.id);
+
+	  const { data, error } = await supabase.from("Tareas").insert([
+		{
+		  Texto: texto,
+		  user_id: session.user.id,
+		},
+	  ]);
+
+	  console.log("Resultado insert:", data, error);
+
+	  setTexto("");
+	  cargarTareas();
+	}
+
 
   async function eliminarTarea(id) {
     await supabase.from("Tareas").delete().eq("id", id);
