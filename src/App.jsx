@@ -56,118 +56,139 @@ function App() {
 
   return (
     <div style={{
-      maxWidth: "400px",
-      margin: "40px auto",
-      fontFamily: "sans-serif"
+      background: "#F5F5F5",
+      minHeight: "100vh",
+      padding: "30px",
+      fontFamily: "Arial"
     }}>
 
-      <h2 style={{ textAlign: "center" }}>
-        ✅ Gestor de tareas
-      </h2>
-
-      {/* INPUT */}
-      <div style={{ display: "flex", gap: "10px" }}>
-        <input
-          value={texto}
-          onChange={(e) => setTexto(e.target.value)}
-          placeholder="Nueva tarea"
-          style={{
-            flex: 1,
-            padding: "10px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-          }}
-        />
-        <button
-          onClick={agregarTarea}
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          +
-        </button>
-      </div>
-
-      {/* FILTROS */}
       <div style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "10px",
-        marginTop: "15px"
+        maxWidth: "420px",
+        margin: "auto",
+        background: "white",
+        padding: "20px",
+        borderRadius: "15px",
+        boxShadow: "0 5px 20px rgba(0,0,0,0.1)"
       }}>
-        {["todas", "pendientes", "completadas"].map((f) => (
-          <button
-            key={f}
-            onClick={() => setFiltro(f)}
-            style={{
-              padding: "6px 10px",
-              borderRadius: "6px",
-              border: "none",
-              cursor: "pointer",
-              background: filtro === f ? "#4CAF50" : "#ddd"
-            }}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
 
-      {/* LISTA */}
-      <ul style={{
-        listStyle: "none",
-        padding: 0,
-        marginTop: "20px"
-      }}>
-        {tareasFiltradas.map((t) => (
-          <li
-            key={t.id}
+        <h2 style={{
+          textAlign: "center",
+          color: "#0B5563"
+        }}>
+          SOUTH Tasks
+        </h2>
+
+        {/* INPUT */}
+        <div style={{ display: "flex", gap: "10px" }}>
+          <input
+            value={texto}
+            onChange={(e) => setTexto(e.target.value)}
+            placeholder="Nueva tarea"
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              background: "#f5f5f5",
+              flex: 1,
               padding: "10px",
-              borderRadius: "10px",
-              marginBottom: "10px"
+              borderRadius: "8px",
+              border: "1px solid #ccc"
+            }}
+          />
+
+          <button
+            onClick={agregarTarea}
+            style={{
+              padding: "10px",
+              borderRadius: "8px",
+              border: "none",
+              backgroundColor: "#2CB5A5",
+              color: "white",
+              cursor: "pointer"
             }}
           >
-            <div>
-              <input
-                type="checkbox"
-                checked={t.completada || false}
-                onChange={() =>
-                  toggleCompletada(t.id, t.completada)
-                }
-              />
-              <span style={{
-                marginLeft: "10px",
-                textDecoration: t.completada
-                  ? "line-through"
-                  : "none"
-              }}>
-                {t.Texto}
-              </span>
-            </div>
+            +
+          </button>
+        </div>
 
+        {/* FILTROS */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
+          marginTop: "15px"
+        }}>
+          {["todas", "pendientes", "completadas"].map((f) => (
             <button
-              onClick={() => eliminarTarea(t.id)}
+              key={f}
+              onClick={() => setFiltro(f)}
               style={{
+                padding: "6px 10px",
+                borderRadius: "6px",
                 border: "none",
-                background: "transparent",
                 cursor: "pointer",
-                fontSize: "18px"
+                background:
+                  filtro === f ? "#0B5563" : "#ddd",
+                color:
+                  filtro === f ? "white" : "black"
               }}
             >
-              ❌
+              {f}
             </button>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+
+        {/* LISTA */}
+        <ul style={{
+          listStyle: "none",
+          padding: 0,
+          marginTop: "20px"
+        }}>
+          {tareasFiltradas.map((t) => (
+            <li
+              key={t.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "#f9f9f9",
+                padding: "10px",
+                borderRadius: "10px",
+                marginBottom: "10px",
+                borderLeft: "5px solid #2CB5A5"
+              }}
+            >
+              <div>
+                <input
+                  type="checkbox"
+                  checked={t.completada || false}
+                  onChange={() =>
+                    toggleCompletada(t.id, t.completada)
+                  }
+                />
+                <span style={{
+                  marginLeft: "10px",
+                  textDecoration: t.completada
+                    ? "line-through"
+                    : "none"
+                }}>
+                  {t.Texto}
+                </span>
+              </div>
+
+              <button
+                onClick={() => eliminarTarea(t.id)}
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                  color: "#0B5563",
+                  fontSize: "18px"
+                }}
+              >
+                ❌
+              </button>
+            </li>
+          ))}
+        </ul>
+
+      </div>
     </div>
   );
 }
