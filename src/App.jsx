@@ -9,7 +9,7 @@ const supabase = createClient(
 function App() {
   const [tareas, setTareas] = useState([]);
   const [texto, setTexto] = useState("");
-  const [filtro, setFiltro] = useState("todas")
+  const [filtro, setFiltro] = useState("todas");
 
   useEffect(() => {
     cargarTareas();
@@ -42,22 +42,26 @@ function App() {
     cargarTareas();
   }
 
-	const tareasFiltradas = tareas.filter((t) => {
-	  if (filtro === "pendientes") return !t.completada;
-	  if (filtro === "completadas") return t.completada;
-	  return true; // todas
-	});
-	``
+  // ✅ FILTRADO
+  const tareasFiltradas = tareas.filter((t) => {
+    if (filtro === "pendientes") return !t.completada;
+    if (filtro === "completadas") return t.completada;
+    return true;
+  });
 
   return (
-    <div style={{
-      maxWidth: "400px",
-      margin: "50px auto",
-      fontFamily: "sans-serif"
-    }}>
-      
-      <h2 style={{ textAlign: "center" }}>✅ Gestor de tareas</h2>
+    <div
+      style={{
+        maxWidth: "400px",
+        margin: "50px auto",
+        fontFamily: "sans-serif",
+      }}
+    >
+      <h2 style={{ textAlign: "center" }}>
+        ✅ Gestor de tareas
+      </h2>
 
+      {/* INPUT */}
       <div style={{ display: "flex", gap: "10px" }}>
         <input
           value={texto}
@@ -67,7 +71,7 @@ function App() {
             flex: 1,
             padding: "10px",
             borderRadius: "8px",
-            border: "1px solid #ccc"
+            border: "1px solid #ccc",
           }}
         />
 
@@ -79,14 +83,77 @@ function App() {
             border: "none",
             backgroundColor: "#4CAF50",
             color: "white",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         >
           +
         </button>
       </div>
 
-      <ul style={{ listStyle: "none", padding: 0, marginTop: "20px" }}>
+      {/* ✅ FILTROS (CORRECTAMENTE AQUÍ) */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
+          marginTop: "15px",
+        }}
+      >
+        <button
+          onClick={() => setFiltro("todas")}
+          style={{
+            padding: "6px 10px",
+            borderRadius: "6px",
+            border: "none",
+            cursor: "pointer",
+            background:
+              filtro === "todas" ? "#4CAF50" : "#ddd",
+          }}
+        >
+          Todas
+        </button>
+
+        <button
+          onClick={() => setFiltro("pendientes")}
+          style={{
+            padding: "6px 10px",
+            borderRadius: "6px",
+            border: "none",
+            cursor: "pointer",
+            background:
+              filtro === "pendientes"
+                ? "#4CAF50"
+                : "#ddd",
+          }}
+        >
+          Pendientes
+        </button>
+
+        <button
+          onClick={() => setFiltro("completadas")}
+          style={{
+            padding: "6px 10px",
+            borderRadius: "6px",
+            border: "none",
+            cursor: "pointer",
+            background:
+              filtro === "completadas"
+                ? "#4CAF50"
+                : "#ddd",
+          }}
+        >
+          Completadas
+        </button>
+      </div>
+
+      {/* LISTA */}
+      <ul
+        style={{
+          listStyle: "none",
+          padding: 0,
+          marginTop: "20px",
+        }}
+      >
         {tareasFiltradas.map((t) => (
           <li
             key={t.id}
@@ -97,48 +164,26 @@ function App() {
               background: "#f5f5f5",
               padding: "10px",
               borderRadius: "10px",
-              marginBottom: "10px"
+              marginBottom: "10px",
             }}
           >
             <div>
               <input
                 type="checkbox"
                 checked={t.completada || false}
-                onChange={() => toggleCompletada(t.id, t.completada)}
+                onChange={() =>
+                  toggleCompletada(t.id, t.completada)
+                }
               />
 
-			<div style={{
-			  display: "flex",
-			  justifyContent: "center",
-			  gap: "10px",
-			  marginTop: "15px"
-			}}>
-			  <button
-				onClick={() => setFiltro("todas")}
-				style={{ background: filtro === "todas" ? "#4CAF50" : "#ddd" }}
-			  >
-				Todas
-			  </button>
-
-			  <button
-				onClick={() => setFiltro("pendientes")}
-				style={{ background: filtro === "pendientes" ? "#4CAF50" : "#ddd" }}
-			  >
-				Pendientes
-			  </button>
-
-			  <button
-				onClick={() => setFiltro("completadas")}
-				style={{ background: filtro === "completadas" ? "#4CAF50" : "#ddd" }}
-			  >
-				Completadas
-			  </button>
-			</div>
-
-              <span style={{
-                marginLeft: "10px",
-                textDecoration: t.completada ? "line-through" : "none"
-              }}>
+              <span
+                style={{
+                  marginLeft: "10px",
+                  textDecoration: t.completada
+                    ? "line-through"
+                    : "none",
+                }}
+              >
                 {t.Texto}
               </span>
             </div>
@@ -149,7 +194,7 @@ function App() {
                 border: "none",
                 background: "transparent",
                 cursor: "pointer",
-                fontSize: "18px"
+                fontSize: "18px",
               }}
             >
               ❌
