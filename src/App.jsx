@@ -87,7 +87,7 @@ function App() {
       <ul>
         {tareas.map((t) => (
           <li key={t.id}>
-            {t.texto}
+            {t.Texto}
             <button onClick={() => eliminarTarea(t.id)}>
               ❌
             </button>
