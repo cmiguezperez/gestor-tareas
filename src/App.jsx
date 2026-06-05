@@ -3,8 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 
 // ✅ Conexión con Supabase (usa variables de Vercel)
 const supabase = createClient(
-  "https://futknwugcqlezpyazfee.supabase.co",
-  "sb_publishable_zgzyP0RtJujq7Y39WTyMKQ_YJEwlezl"
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_KEY
 );
 
 
