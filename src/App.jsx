@@ -19,7 +19,7 @@ function App() {
 
   async function cargarTareas() {
     const { data, error } = await supabase
-      .from("tareas")
+      .from("Tareas")
       .select("*");
 
     if (error) {
