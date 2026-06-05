@@ -31,21 +31,31 @@ function App() {
   }
 
   // ✅ Añadir tarea
-  async function agregarTarea() {
-    if (!texto) return;
+		async function agregarTarea() {
+		  console.log("CLICK detectado");
 
-    const { error } = await supabase
-      .from("tareas")
-      .insert([{ texto }]);
+		  if (!texto) {
+			console.log("Texto vacío");
+			return;
+		  }
 
-    if (error) {
-      console.log("Error insertando:", error);
-      return;
-    }
+		  console.log("Enviando:", texto);
 
-    setTexto("");
-    cargarTareas();
-  }
+		  const { data, error } = await supabase
+			.from("Tareas")   // 👈 MUY IMPORTANTE (con MAYÚSCULA como en la tabla)
+			.insert([{ Texto: texto }]);  // 👈 mismo nombre de columna exacto
+
+		  console.log("Resultado:", data, error);
+
+		  if (error) {
+			console.log("ERROR:", error);
+			return;
+		  }
+
+		  setTexto("");
+		  cargarTareas();
+		}
+
 
   // ✅ Eliminar tarea
   async function eliminarTarea(id) {
