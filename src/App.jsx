@@ -60,7 +60,7 @@ function App() {
   // ✅ Eliminar tarea
   async function eliminarTarea(id) {
     const { error } = await supabase
-      .from("tareas")
+      .from("Tareas")
       .delete()
       .eq("id", id);
 
