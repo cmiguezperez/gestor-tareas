@@ -9,6 +9,7 @@ const supabase = createClient(
 function App() {
   const [tareas, setTareas] = useState([]);
   const [texto, setTexto] = useState("");
+  const [filtro, setFiltro] = useState("todas")
 
   useEffect(() => {
     cargarTareas();
@@ -40,6 +41,13 @@ function App() {
 
     cargarTareas();
   }
+
+	const tareasFiltradas = tareas.filter((t) => {
+	  if (filtro === "pendientes") return !t.completada;
+	  if (filtro === "completadas") return t.completada;
+	  return true; // todas
+	});
+	``
 
   return (
     <div style={{
@@ -79,7 +87,7 @@ function App() {
       </div>
 
       <ul style={{ listStyle: "none", padding: 0, marginTop: "20px" }}>
-        {tareas.map((t) => (
+        {tareasFiltradas.map((t) => (
           <li
             key={t.id}
             style={{
@@ -98,6 +106,34 @@ function App() {
                 checked={t.completada || false}
                 onChange={() => toggleCompletada(t.id, t.completada)}
               />
+
+			<div style={{
+			  display: "flex",
+			  justifyContent: "center",
+			  gap: "10px",
+			  marginTop: "15px"
+			}}>
+			  <button
+				onClick={() => setFiltro("todas")}
+				style={{ background: filtro === "todas" ? "#4CAF50" : "#ddd" }}
+			  >
+				Todas
+			  </button>
+
+			  <button
+				onClick={() => setFiltro("pendientes")}
+				style={{ background: filtro === "pendientes" ? "#4CAF50" : "#ddd" }}
+			  >
+				Pendientes
+			  </button>
+
+			  <button
+				onClick={() => setFiltro("completadas")}
+				style={{ background: filtro === "completadas" ? "#4CAF50" : "#ddd" }}
+			  >
+				Completadas
+			  </button>
+			</div>
 
               <span style={{
                 marginLeft: "10px",
